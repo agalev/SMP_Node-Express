@@ -4,8 +4,10 @@ const router = express.Router()
 
 const PlacesControllers = require('../controllers/places-controller')
 
-router.get('/:pid', PlacesControllers.GetPlaceById)
+router.get('/:pid', PlacesControllers.getPlaceById)
 
-router.get('/user/:uid', PlacesControllers.GetPlaceByUserId)
+router.get('/user/:uid', PlacesControllers.getPlaceByUserId)
+
+router.post('/', PlacesControllers.createPlace)
 
 module.exports = router
