@@ -2,50 +2,77 @@ const { v4: uuidv4 } = require('uuid')
 const { validationResult } = require('express-validator')
 
 const HttpError = require('../models/http-error')
+const User = require('../models/user')
 
 const DUMMY_USERS = [
   {
     id: 'u1',
     name: 'Alexander Edelweiss',
     email: 'test@test.com',
-    password: 'password123'
-  }
+    password: 'password123',
+  },
 ]
 
 const getUsers = (req, res, next) => {
-  res.json({users: DUMMY_USERS})
+  res.json({ users: DUMMY_USERS })
 }
 
-const signup = (req, res, next) => {
+const signup = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    throw new HttpError('Invalid inputs passed, please check your data', 422)
+    return next(
+      new HttpError('Invalid inputs passed, please check your data', 422)
+    )
   }
-  const { name, email, password } = req.body
-  const hasUser = DUMMY_USERS.find(u => u.email === email)
-  if (hasUser) {
-    throw new HttpError('Could not create user; user already exists', 422)
-  } 
-  const createdUser = {
-    id: uuidv4(),
+  const { name, email, password, places } = req.body
+
+  let existingUser
+  try {
+    existingUser = await User.findOne({ email: email })
+  } catch (err) {
+    const error = new HttpError(
+      'Signing up failed, please try again later',
+      500
+    )
+    return next(error)
+  }
+
+  if (existingUser) {
+    const error = new HttpError(
+      'User exists already, please login instead',
+      422
+    )
+    return next(error)
+  }
+  const createdUser = new User({
     name,
     email,
-    password
+    image:
+      'data:image/jpeg;base64,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',
+    password,
+    places,
+  })
+
+  try {
+    await createdUser.save()
+  } catch (err) {
+    const error = new HttpError('Signing up failed, please try again', 500)
+    return next(error)
   }
-
-  DUMMY_USERS.push(createdUser)
-
-  res.status(201).json({user: createdUser})
+  res.status(201).json({ user: createdUser.toObject({ getters: true }) })
 }
 
 const login = (req, res, next) => {
   const { email, password } = req.body
 
-  const identifiedUser = DUMMY_USERS.find(u => u.email === email)
+  const identifiedUser = DUMMY_USERS.find((u) => u.email === email)
   if (!identifiedUser || identifiedUser.password !== password) {
-    throw new HttpError('Could not identified user; credentials seem to be wrong', 401)
+    throw new HttpError(
+      'Could not identified user; credentials seem to be wrong',
+      401
+    )
   }
-  res.json({message: 'Logged in!'})
+  res.json({ message: 'Logged in!' })
 }
 
 exports.getUsers = getUsers
