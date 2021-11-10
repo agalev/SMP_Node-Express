@@ -11,7 +11,7 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.use('/api/places', placesRoutes) // => filter placesRoutes to only be reached at /api/places
+app.use('/api/places', placesRoutes)
 
 app.use('/api/users', usersRoutes)
 
