@@ -2,3 +2,5 @@
 node_modules
 #Ignore config file
 config.js
+#Ignore uploads folder
+uploads
