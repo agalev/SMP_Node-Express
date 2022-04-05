@@ -48,8 +48,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image:
-      'https://cdn11.bigcommerce.com/s-c49b6/images/stencil/1280w/products/670/3760/Edelweiss_Seeds_Leontopodium_Alpinum_p2__65497.1564800913.jpg?c=2',
+    image: req.file.path,
     password,
     places: [],
   })

@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const mongoose = require('mongoose')
 const { validationResult } = require('express-validator')
 
@@ -77,8 +79,7 @@ const createPlace = async (req, res, next) => {
   const createdPlace = new Place({
     title,
     description,
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gnaphalium_leontopodium_Atlas_Alpenflora.jpg/1024px-Gnaphalium_leontopodium_Atlas_Alpenflora.jpg',
+    image:req.file.path,
     address,
     location: coordinates,
     creator
@@ -97,6 +98,8 @@ const createPlace = async (req, res, next) => {
     const error = new HttpError('Could not find user for provided id.', 404)
     return next(error)
   }
+
+  const imagePath = user.place.image
 
     try {
       const sess = await mongoose.startSession()
@@ -179,6 +182,11 @@ const deletePlace = async (req, res, next) => {
       500
     )
   }
+
+  fs.unlink(imagePath, err => {
+    console.log(err)
+  })
+
   res.status(200).json({ message: 'Deleted place.' })
 }
 
