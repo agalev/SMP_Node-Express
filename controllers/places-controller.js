@@ -99,7 +99,7 @@ const createPlace = async (req, res, next) => {
     return next(error)
   }
 
-  const imagePath = user.place.image
+  const imagePath = user.places.image
 
     try {
       const sess = await mongoose.startSession()
@@ -168,6 +168,8 @@ const deletePlace = async (req, res, next) => {
     const error = new HttpError('Could not find place for provided id.', 404)
     return next(error)
   }
+
+  const imagePath = place.image
 
   try {
     const sess = await mongoose.startSession()
