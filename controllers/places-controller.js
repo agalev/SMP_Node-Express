@@ -182,6 +182,7 @@ const deletePlace = async (req, res, next) => {
 		return next(error)
 	}
 
+	
 	const imagePath = place.image
 
 	try {
