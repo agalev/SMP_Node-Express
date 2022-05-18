@@ -182,10 +182,6 @@ const deletePlace = async (req, res, next) => {
 		return next(error)
 	}
 
-<<<<<<< HEAD
-	
-=======
->>>>>>> 6a11213889fc6cf20cde8fb979c0b5dd9c134f6f
 	const imagePath = place.image
 
 	try {
