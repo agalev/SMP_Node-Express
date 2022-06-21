@@ -4,4 +4,4 @@ node_modules
 config.js
 nodemon.json
 #Ignore uploads folder
-uploads
+# uploads
